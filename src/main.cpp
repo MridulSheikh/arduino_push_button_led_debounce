@@ -7,48 +7,45 @@ int isClickedPushButton = 0;
 
 byte lastButtonState;
 
-unsigned long lasTimeButtonStateChange = millis();
-
 void setup()
 {
   pinMode(pushButton, INPUT);
   pinMode(led, OUTPUT);
-  Serial.begin(9600);
   lastButtonState = digitalRead(pushButton);
 }
 
-void loop()
+void handlePushButtonWithDebounce(int buttonPin, void (*instruction)())
 {
   // digital push button input
-  int pushButtonDigitalInput = digitalRead(pushButton);
-
-  Serial.println(lastButtonState);
+  int pushButtonDigitalInput = digitalRead(buttonPin);
 
   // when push button get input run this block
   if (pushButtonDigitalInput != lastButtonState)
   {
-    lasTimeButtonStateChange = millis();
     lastButtonState = pushButtonDigitalInput;
     if (pushButtonDigitalInput == 1)
     {
-      if (isClickedPushButton == 0)
-      {
-        isClickedPushButton = 1;
-      }
-      else
-      {
-        isClickedPushButton = 0;
-      };
+      instruction();
     };
   }
+  delay(5);
+}
 
-  // conditional led output
-  if (isClickedPushButton == 1)
+void handleLedLogic()
+{
+  if (isClickedPushButton == 0)
   {
     digitalWrite(led, 1);
+    isClickedPushButton = 1;
   }
   else
   {
     digitalWrite(led, 0);
+    isClickedPushButton = 0;
   };
+}
+
+void loop()
+{
+  handlePushButtonWithDebounce(pushButton, &handleLedLogic);
 }
