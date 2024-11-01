@@ -13,6 +13,7 @@ void setup()
 {
   pinMode(pushButton, INPUT);
   pinMode(led, OUTPUT);
+  Serial.begin(9600);
   lastButtonState = digitalRead(pushButton);
 }
 
@@ -21,12 +22,14 @@ void loop()
   // digital push button input
   int pushButtonDigitalInput = digitalRead(pushButton);
 
+  Serial.println(lastButtonState);
+
   // when push button get input run this block
   if (pushButtonDigitalInput != lastButtonState)
   {
     lasTimeButtonStateChange = millis();
     lastButtonState = pushButtonDigitalInput;
-    if (pushButtonDigitalInput == 0)
+    if (pushButtonDigitalInput == 1)
     {
       if (isClickedPushButton == 0)
       {
